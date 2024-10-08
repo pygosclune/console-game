@@ -106,7 +106,7 @@ class Program
         for (int i = 1; i <= 10; i++)
         {
             IEnemy enemy = EnemyFactory.CreateEnemy(location.Enemies[Random.Shared.Next(location.Enemies.Count)].GetType().Name);
-            Console.WriteLine($"Turn {i}/10\nYou encounter {enemy.Name} (Level {enemy.Level}, HP {enemy.Health}, Attack Power {enemy.AttackPower})");
+            Console.WriteLine($"Round {i}/10\nYou encounter {enemy.Name} (Level {enemy.Level}, HP {enemy.Health}, Attack Power {enemy.AttackPower})");
             FightResult result = Fight(enemy);
             switch (result)
             {
