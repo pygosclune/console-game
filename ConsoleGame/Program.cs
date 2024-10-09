@@ -3,10 +3,10 @@ using ConsoleGame;
 using System.Text.Json;
 using Pastel;
 
-class Program
+internal class Program
 {
-    static Player player;
-    static List<ILocation> availableLocations;
+    private static Player _player;
+    private static List<ILocation> _availableLocations;
 
     private enum FightResult
     {
@@ -15,7 +15,7 @@ class Program
         Escape
     }
 
-    private static void Main(string[] args)
+    private static void Main()
     {
         Console.WriteLine("Welcome in console game!".Pastel(Color.White));
         Console.WriteLine("1. New game");
@@ -26,15 +26,15 @@ class Program
         switch (choice)
         {
             case "1":
-                player = new Player();
+                _player = new Player();
                 break;
             case "2":
             {
-                player = LoadGame();
-                if (player == null)
+                _player = LoadGame();
+                if (_player == null)
                 {
                     Console.WriteLine("Saved game not found. Starting a new game...");
-                    player = new Player();
+                    _player = new Player();
                 }
 
                 break;
@@ -43,7 +43,7 @@ class Program
 
         while (true)
         {
-            availableLocations = LocationManager.GetAvailableLocations(player.Level);
+            _availableLocations = LocationManager.GetAvailableLocations(_player.Level);
             DisplayMenu();
             string ?userInput = Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(userInput))
@@ -51,11 +51,11 @@ class Program
                 switch (userInput.ToLower())
                 {
                     case "q":
-                        SaveGame(player);
+                        SaveGame(_player);
                         break;
-                    case "i" when player.Inventory.Count > 0:
+                    case "i" when _player.Inventory.Count > 0:
                     {
-                        foreach (var item in player.Inventory)
+                        foreach (var item in _player.Inventory)
                         {
                             Console.Write(item + " ");
                         }
@@ -68,9 +68,9 @@ class Program
                     default:
                     {
                         if (int.TryParse(userInput, out int locationIndex) && locationIndex > 0 &&
-                            locationIndex <= availableLocations.Count)
+                            locationIndex <= _availableLocations.Count)
                         {
-                            ExploreLocation(availableLocations[locationIndex - 1]);
+                            ExploreLocation(_availableLocations[locationIndex - 1]);
                         }
                         else
                         {
@@ -91,11 +91,11 @@ class Program
     private static void DisplayMenu()
     {
         Console.WriteLine("\nAvailable locations:");
-        for (int i = 0; i < availableLocations.Count; i++)
+        for (int i = 0; i < _availableLocations.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {availableLocations[i].Name} (Required level: {availableLocations[i].RequiredLevel})");
+            Console.WriteLine($"{i + 1}. {_availableLocations[i].Name} (Required level: {_availableLocations[i].RequiredLevel})");
         }
-        Console.WriteLine("Q. Save and quit");
+        Console.WriteLine("Q. Save game");
         Console.WriteLine("I. Inventory");
         Console.Write("Select a location or action: ");
     }
@@ -112,12 +112,12 @@ class Program
             {
                 case FightResult.Victory:
                     Console.WriteLine("Congratulations! You have defeated your opponent!");
-                    player.AddExperience(enemy.ExperienceValue);
+                    _player.AddExperience(enemy.ExperienceValue);
                     DropLoot(location);
                     break;
                 case FightResult.Defeat:
                     Console.WriteLine("You have lost the battle. You return to the main menu.");
-                    player.ResetHP();
+                    _player.ResetHp();
                     return;
                 case FightResult.Escape:
                     Console.WriteLine("You have successfully escaped. You return to the main menu.");
@@ -130,9 +130,9 @@ class Program
     private static FightResult Fight(IEnemy enemy)
     {
         Console.WriteLine($"You are fighting the {enemy.Name}!");
-        while (player.Health > 0 && enemy.Health > 0)
+        while (_player.Health > 0 && enemy.Health > 0)
         {
-            Console.WriteLine($"\nYour HP: {player.Health}, Opponent's HP: {enemy.Health}");
+            Console.WriteLine($"\nYour HP: {_player.Health}, Opponent's HP: {enemy.Health}");
             Console.WriteLine("1. Attack");
             Console.WriteLine("2. Escape");
             Console.Write("Select an action: ");
@@ -141,24 +141,24 @@ class Program
             if (choice == "1")
             {
                 // Player's turn
-                int calculatedAttackPower = (int) Math.Round(player.AttackPower * (Random.Shared.NextDouble() + 1));
+                int calculatedAttackPower = (int) Math.Round(_player.AttackPower * (Random.Shared.NextDouble() + 1));
                 enemy.TakeDamage(calculatedAttackPower);
                 if (enemy.Health <= 0) return FightResult.Victory;
 
                 // Opponent's turn
-                enemy.Attack(player);
-                if (player.Health <= 0) return FightResult.Defeat;
+                enemy.Attack(_player);
+                if (_player.Health <= 0) return FightResult.Defeat;
             }
             else if (choice == "2")
             {
-                double escapeChance = CalculateEscapeChance(player, enemy);
+                double escapeChance = CalculateEscapeChance(_player, enemy);
                 if (Random.Shared.NextDouble() < escapeChance)
                 {
                     return FightResult.Escape;
                 }
                 Console.WriteLine("You failed to escape. The opponent is attacking!");
-                enemy.Attack(player);
-                if (player.Health <= 0) return FightResult.Defeat;
+                enemy.Attack(_player);
+                if (_player.Health <= 0) return FightResult.Defeat;
                 
             }
             else
@@ -166,7 +166,7 @@ class Program
                 Console.WriteLine("Incorrect choice. You lose a turn!");
             }
         }
-        return player.Health > 0 ? FightResult.Victory : FightResult.Defeat;
+        return _player.Health > 0 ? FightResult.Victory : FightResult.Defeat;
     }
 
     private static double CalculateEscapeChance(Player playerObj, IEnemy enemy)
@@ -183,7 +183,7 @@ class Program
     {
         if (Random.Shared.Next(100) >= 30) return; // 30% chance for loot
         IItem loot = location.PossibleLoot[Random.Shared.Next(location.PossibleLoot.Count)];
-        player.Inventory.Add(loot);
+        _player.Inventory.Add(loot);
         Console.WriteLine($"Item obtained: {loot.Name}!");
     }
 

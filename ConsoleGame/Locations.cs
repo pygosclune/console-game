@@ -8,27 +8,19 @@ public interface ILocation
     List<IItem> PossibleLoot { get; }
 }
 
-public class Location : ILocation
+public class Location(string name, int requiredLevel) : ILocation
 {
-    public string Name { get; protected set; }
-    public int RequiredLevel { get; protected set; }
-    public List<IEnemy> Enemies { get; protected set; }
-    public List<IItem> PossibleLoot { get; protected set; }
+    public string Name { get; protected set; } = name;
+    public int RequiredLevel { get; protected set; } = requiredLevel;
+    public List<IEnemy> Enemies { get; protected set; } = [];
+    public List<IItem> PossibleLoot { get; protected set; } = [];
 
-    public Location(string name, int requiredLevel)
-    {
-        Name = name;
-        RequiredLevel = requiredLevel;
-        Enemies = new List<IEnemy>();
-        PossibleLoot = new List<IItem>();
-    }
-
-    public void AddEnemy(IEnemy enemy)
+    protected void AddEnemy(IEnemy enemy)
     {
         Enemies.Add(enemy);
     }
 
-    public void AddLoot(IItem item)
+    protected void AddLoot(IItem item)
     {
         PossibleLoot.Add(item);
     }
@@ -67,7 +59,7 @@ public class HazardCity : Location
 
 public static class LocationManager
 {
-    private static List<ILocation> _locations =
+    private static readonly List<ILocation> Locations =
     [
         new Ermanda(),
         new SalalTown(),
@@ -76,6 +68,6 @@ public static class LocationManager
 
     public static List<ILocation> GetAvailableLocations(int playerLevel)
     {
-        return _locations.Where(l => l.RequiredLevel <= playerLevel).ToList();
+        return Locations.Where(l => l.RequiredLevel <= playerLevel).ToList();
     }
 }

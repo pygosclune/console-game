@@ -14,8 +14,8 @@ public interface IEnemy
 
 public abstract class BaseEnemy : IEnemy
 {
-    public string Name { get; protected set; }
-    public int Health { get; set; }
+    public string Name { get; protected set ; }
+    public int Health { get; protected set; }
     public int AttackPower  { get; protected set; }
     public int MagicPower { get; protected set; }
     public int ExperienceValue { get; protected set; }

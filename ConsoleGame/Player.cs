@@ -43,7 +43,7 @@ public class Player
 
     public void UnequipItem(string itemType)
     {
-        if (EquippedItems.TryGetValue(itemType, out IItem item))
+        if (EquippedItems.TryGetValue(itemType, out IItem? item))
         {
             item.RemoveEffects(this);
             EquippedItems.Remove(itemType);
@@ -79,7 +79,7 @@ public class Player
         return (int)(100 * Math.Pow(Level, 1.5));
     }
 
-    public void ResetHP() // not sure if needed
+    public void ResetHp() // not sure if needed
     {
         Health = MaxHealth;
     }
