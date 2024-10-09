@@ -74,7 +74,7 @@ public class Player
         }
     }
 
-    private int CalculateExpNeeded()
+    public int CalculateExpNeeded()
     {
         return (int)(100 * Math.Pow(Level, 1.5));
     }

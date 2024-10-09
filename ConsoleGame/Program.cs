@@ -65,6 +65,11 @@ internal class Program
                     case "i":
                         Console.WriteLine("Your inventory is empty.");
                         break;
+                    case "s":
+                        Console.WriteLine($"Level {_player.Level} ({_player.Experience}/{_player.CalculateExpNeeded()})");
+                        Console.WriteLine($"Max HP: {_player.MaxHealth}");
+                        Console.WriteLine($"Attack Power: {_player.AttackPower} Magic Power: {_player.MagicPower}");
+                        break;
                     default:
                     {
                         if (int.TryParse(userInput, out int locationIndex) && locationIndex > 0 &&
@@ -97,6 +102,7 @@ internal class Program
         }
         Console.WriteLine("Q. Save game");
         Console.WriteLine("I. Inventory");
+        Console.WriteLine("S. Stats");
         Console.Write("Select a location or action: ");
     }
 
