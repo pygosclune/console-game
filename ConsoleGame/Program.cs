@@ -127,6 +127,7 @@ internal class Program
                     return;
                 case FightResult.Escape:
                     Console.WriteLine("You have successfully escaped. You return to the main menu.");
+                    _player.ResetHp();
                     return;
             }
         }
