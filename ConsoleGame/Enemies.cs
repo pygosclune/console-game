@@ -45,7 +45,7 @@ public class Wolf : BaseEnemy
     {
         Name = "Wolf";
         Health = 50;
-        AttackPower = 10;
+        AttackPower = 5;
         ExperienceValue = Random.Shared.Next(10, 31);
         Level = Random.Shared.Next(1, 11); // Max 10 lvl
         ScaleStats();
